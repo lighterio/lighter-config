@@ -1,0 +1,7 @@
+.cache
+.idea
+.project
+.DS_Store
+results
+coverage
+node_modules
