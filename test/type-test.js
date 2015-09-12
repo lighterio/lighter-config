@@ -2,9 +2,7 @@ var Type = require('../lighter-type')
 var is = global.is || require('exam/lib/is')
 
 describe('Type', function () {
-
   describe('.hide', function () {
-
     it('creates hidden properties', function () {
       var o = {a: 1}
       Type.hide(o, 'b', 2)
@@ -16,11 +14,9 @@ describe('Type', function () {
         is(p, 'a')
       }
     })
-
   })
 
   describe('.decorate', function () {
-
     it('decorates with additions', function () {
       var o = {}
       Type.decorate(o, {a: 1})
@@ -68,11 +64,9 @@ describe('Type', function () {
       Type.decorate(o, p, true)
       is.same(o, {a: 1, b: 2, c: 3})
     })
-
   })
 
   describe('.extend', function () {
-
     it('extends a type', function () {
       var Dog = Type.extend({
         init: function (name) {
@@ -83,22 +77,22 @@ describe('Type', function () {
         }
       })
       var fido = new Dog('Fido')
+      is.instanceOf(fido, Dog)
       fido.barkback(function (error, message) {
+        is.falsy(error)
         is(message, 'Fido says "woof!"')
       })
     })
-
   })
 
   describe('.prototype.init', function () {
-
     it('is the same as Type', function () {
       is(Type.prototype.init, Type)
     })
 
     it('instantiates an object', function () {
       var type = new Type()
-      is(type.__proto__, Type.prototype)
+      is.instanceOf(type, Type)
     })
 
     it('comes from super if omitted', function () {
@@ -116,7 +110,5 @@ describe('Type', function () {
       is(sub.name, 'sub')
       is(sub.isSub(), true)
     })
-
   })
-
 })

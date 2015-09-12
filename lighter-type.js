@@ -16,7 +16,6 @@ module.exports = Type.prototype.init = Type
  * @return {Object}      The new Type.
  */
 Type.extend = function (map) {
-
   // Reference the super prototype which is being extended from.
   var sup = this.prototype
 
@@ -47,14 +46,11 @@ Type.extend = function (map) {
  * @param  {Boolean} overwrite  Whether to overwrite values that are already defined.
  */
 Type.decorate = function (object, map, overwrite) {
-
   // If a map isn't provided, use the Type's prototype.
   map = map || this.prototype
   for (var key in map) {
-
     if (overwrite || (object[key] === undefined)) {
       var value = map[key]
-
       // Give some privacy to methods starting with "_".
       if (key[0] === '_' || (typeof value === 'function' && value.name[0] === '_')) {
         Type.hide(object, key, value)

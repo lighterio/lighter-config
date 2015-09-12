@@ -4,6 +4,7 @@
 [![Build Status](https://img.shields.io/travis/lighterio/lighter-type.svg)](https://travis-ci.org/lighterio/lighter-type)
 [![Code Coverage](https://img.shields.io/coveralls/lighterio/lighter-type/master.svg)](https://coveralls.io/r/lighterio/lighter-type)
 [![Dependencies](https://img.shields.io/david/lighterio/lighter-type.svg)](https://david-dm.org/lighterio/lighter-type)
+[![Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
 [![Support](https://img.shields.io/gratipay/Lighter.io.svg)](https://gratipay.com/Lighter.io/)
 
 The `lighter-type` module is a lightweight inheritance utility.
