@@ -20,7 +20,9 @@ Type.extend = function (map) {
   var sup = this.prototype
 
   // Create the constructor, using a new or inherited `init` method.
-  var type = map.init || sup.init
+  var type = map.init || function () {
+    sup.init.apply(this, arguments)
+  }
 
   // Reference the sub prototype which is being extended.
   var sub = type.prototype
@@ -39,7 +41,7 @@ Type.extend = function (map) {
 }
 
 /**
- * Decorate an object with a map of properties, or a prototype.
+ * Decorate an object with a map of properties.
  *
  * @param  {Object}  object     An object to decorate.
  * @param  {Object}  map        An optional map to decorate the object with.
@@ -47,7 +49,10 @@ Type.extend = function (map) {
  */
 Type.decorate = function (object, map, overwrite) {
   // If a map isn't provided, use the Type's prototype.
-  map = map || this.prototype
+  if (!map) {
+    object = object.prototype
+    map = this.prototype
+  }
   for (var key in map) {
     if (overwrite || (object[key] === undefined)) {
       var value = map[key]

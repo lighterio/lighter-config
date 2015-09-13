@@ -2,7 +2,9 @@ var Type = require('../lighter-type')
 var is = global.is || require('exam/lib/is')
 
 describe('Type', function () {
+
   describe('.hide', function () {
+
     it('creates hidden properties', function () {
       var o = {a: 1}
       Type.hide(o, 'b', 2)
@@ -14,9 +16,11 @@ describe('Type', function () {
         is(p, 'a')
       }
     })
+
   })
 
   describe('.decorate', function () {
+
     it('decorates with additions', function () {
       var o = {}
       Type.decorate(o, {a: 1})
@@ -64,9 +68,11 @@ describe('Type', function () {
       Type.decorate(o, p, true)
       is.same(o, {a: 1, b: 2, c: 3})
     })
+
   })
 
   describe('.extend', function () {
+
     it('extends a type', function () {
       var Dog = Type.extend({
         init: function (name) {
@@ -83,9 +89,26 @@ describe('Type', function () {
         is(message, 'Fido says "woof!"')
       })
     })
+
+    it('does not let sub types modify super types', function () {
+      var Super = Type.extend({
+        init: function () {
+          // This method and Super itself are one and the same.
+        }
+      })
+      is(Super, Super.prototype.init)
+      var Sub = Super.extend({
+        add: function () {
+          // This should be a Sub method, not a Super method.
+        }
+      })
+      is.undefined(Super.prototype.add)
+    })
+
   })
 
   describe('.prototype.init', function () {
+
     it('is the same as Type', function () {
       is(Type.prototype.init, Type)
     })
@@ -110,5 +133,7 @@ describe('Type', function () {
       is(sub.name, 'sub')
       is(sub.isSub(), true)
     })
+
   })
+
 })
