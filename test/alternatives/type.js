@@ -1,6 +1,6 @@
 var Type = require('../../lighter-type')
 
-module.exports = function () {
+exports.defineProduct = function () {
   var RandomId = Type.extend({
     init: function () {
       this.id = 4

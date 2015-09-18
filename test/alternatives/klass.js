@@ -1,6 +1,6 @@
 var klass = require('klass')
 
-module.exports = function () {
+exports.defineProduct = function () {
   var RandomId = klass(function () {
     this.id = 4
   })

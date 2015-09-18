@@ -1,6 +1,6 @@
 var fiber = require('fiber')
 
-module.exports = function () {
+exports.defineProduct = function () {
   var RandomId = function () {
     return {
       init: function () {

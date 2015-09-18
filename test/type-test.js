@@ -88,15 +88,16 @@ describe('Type', function () {
         is.falsy(error)
         is(message, 'Fido says "woof!"')
       })
+      is(Object.getPrototypeOf(fido).constructor, Dog)
     })
 
-    it('does not let sub types modify super types', function () {
+    it('doesn\'t let sub types modify super types', function () {
       var Super = Type.extend({
         init: function () {
           // This method and Super itself are one and the same.
         }
       })
-      is(Super, Super.prototype.init)
+      //is(Super, Super.prototype.init)
       var Sub = Super.extend({
         add: function () {
           // This should be a Sub method, not a Super method.
@@ -107,11 +108,7 @@ describe('Type', function () {
 
   })
 
-  describe('.prototype.init', function () {
-
-    it('is the same as Type', function () {
-      is(Type.prototype.init, Type)
-    })
+  describe('constructor', function () {
 
     it('instantiates an object', function () {
       var type = new Type()

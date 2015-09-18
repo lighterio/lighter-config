@@ -1,6 +1,6 @@
 var util = require('util')
 
-module.exports = function () {
+exports.defineProduct = function () {
   function RandomId () {
     this.id = 4
   }

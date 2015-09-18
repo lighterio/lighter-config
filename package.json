@@ -24,7 +24,10 @@
     "constructor",
     "hidden",
     "enumerable",
-    "properties"
+    "properties",
+    "fast",
+    "lightweight",
+    "minimal"
   ],
   "main": "lighter-type.js",
   "engines": {

@@ -6,20 +6,21 @@ fs.readdirSync(dir).forEach(function (file) {
   fns[key] = require(dir + '/' + file)
 })
 
-return
-
 describe('Benchmarks', function () {
 
   bench('Definition', function () {
+    this.timeout(1e4)
     Object.keys(fns).forEach(function (name) {
-      var fn = fns[name]
+      var fn = fns[name].defineProduct
       it(name, fn)
     })
   })
 
   bench('Instantiation', function () {
+    this.timeout(1e4)
+    this.sampleSize = 1000
     Object.keys(fns).forEach(function (name) {
-      var Product = fns[name]()
+      var Product = fns[name].defineProduct()
       var fn = function () {
         var product = new Product({'name': 'widget'})
         product.rate(12)

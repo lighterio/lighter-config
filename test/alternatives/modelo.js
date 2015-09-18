@@ -1,6 +1,6 @@
 var modelo = require('modelo')
 
-module.exports = function () {
+exports.defineProduct = function () {
   function RandomId () {
     this.id = 4
   }

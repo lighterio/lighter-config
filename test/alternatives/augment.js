@@ -1,6 +1,6 @@
 var augment = require('augment')
 
-module.exports = function () {
+exports.defineProduct = function () {
   var RandomId = augment(Object, function () {
     this.id = 4
   })
