@@ -1,9 +1,9 @@
 # lighter-type
-[![Version](//img.shields.io/npm/v/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
-[![Downloads](//img.shields.io/npm/dm/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
-[![Build](//img.shields.io/travis/lighterio/lighter-type.svg)](//travis-ci.org/lighterio/lighter-type)
-[![Coverage](//img.shields.io/coveralls/lighterio/lighter-type/master.svg)](//coveralls.io/r/lighterio/lighter-type)
-[![Style](//img.shields.io/badge/code%20style-standard-brightgreen.svg)](//github.com/feross/standard)
+[![Version](https://img.shields.io/npm/v/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
+[![Downloads](https://img.shields.io/npm/dm/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
+[![Build](https://img.shields.io/travis/lighterio/lighter-type.svg)](//travis-ci.org/lighterio/lighter-type)
+[![Coverage](https://img.shields.io/coveralls/lighterio/lighter-type/master.svg)](//coveralls.io/r/lighterio/lighter-type)
+[![Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](//github.com/feross/standard)
 
 The `lighter-type` module is a lightweight inheritance utility.
 
@@ -31,7 +31,7 @@ more on object instantiation than prototype definition. As a result,
 we have achieved more operations per second than other modules in our
 object instantiation benchmark:
 
-![](https://raw.githubusercontent.com/lighterio/lighter-type/master/test/bench/run.png =450×290)
+![](https://raw.githubusercontent.com/lighterio/lighter-type/master/test/bench/run.png)
 
 
 ## API
