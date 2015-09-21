@@ -31,7 +31,7 @@ more on object instantiation than prototype definition. As a result,
 we have achieved more operations per second than other modules in our
 object instantiation benchmark:
 
-![](https://raw.githubusercontent.com/lighterio/lighter-type/master/test/bench/run.png)
+<img src="https://raw.githubusercontent.com/lighterio/lighter-type/master/test/bench/run.png" width="450" height="290">
 
 
 ## API
