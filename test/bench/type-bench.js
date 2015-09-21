@@ -9,7 +9,7 @@ fs.readdirSync(dir).forEach(function (file) {
 describe('Benchmarks', function () {
 
   bench('Definition', function () {
-    this.timeout(1e4)
+    this.timeout(6e4)
     Object.keys(fns).forEach(function (name) {
       var fn = fns[name].defineProduct
       it(name, fn)
@@ -17,8 +17,7 @@ describe('Benchmarks', function () {
   })
 
   bench('Instantiation', function () {
-    this.timeout(1e4)
-    this.sampleSize = 1000
+    this.timeout(6e4)
     Object.keys(fns).forEach(function (name) {
       var Product = fns[name].defineProduct()
       var fn = function () {

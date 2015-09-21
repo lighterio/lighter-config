@@ -7,4 +7,3 @@
 .travis.yml
 .DS_Store
 coverage
-node_modules

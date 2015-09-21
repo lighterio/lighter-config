@@ -1,22 +1,20 @@
-# `lighter-type`
-[![NPM Version](https://img.shields.io/npm/v/lighter-type.svg)](https://npmjs.org/package/lighter-type)
-[![Downloads](https://img.shields.io/npm/dm/lighter-type.svg)](https://npmjs.org/package/lighter-type)
-[![Build Status](https://img.shields.io/travis/lighterio/lighter-type.svg)](https://travis-ci.org/lighterio/lighter-type)
-[![Code Coverage](https://img.shields.io/coveralls/lighterio/lighter-type/master.svg)](https://coveralls.io/r/lighterio/lighter-type)
-[![Dependencies](https://img.shields.io/david/lighterio/lighter-type.svg)](https://david-dm.org/lighterio/lighter-type)
-[![Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
-[![Support](https://img.shields.io/gratipay/Lighter.io.svg)](https://gratipay.com/Lighter.io/)
+# lighter-type
+[![Version](//img.shields.io/npm/v/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
+[![Downloads](//img.shields.io/npm/dm/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
+[![Build](//img.shields.io/travis/lighterio/lighter-type.svg)](//travis-ci.org/lighterio/lighter-type)
+[![Coverage](//img.shields.io/coveralls/lighterio/lighter-type/master.svg)](//coveralls.io/r/lighterio/lighter-type)
+[![Style](//img.shields.io/badge/code%20style-standard-brightgreen.svg)](//github.com/feross/standard)
 
 The `lighter-type` module is a lightweight inheritance utility.
 
 It supports:
-* Constructors (`Type.prototype.init`)
-* Prototypal inheritance (`Type.extend`)
-* Multiple inheritance (`Type.decorate`)
-* Non-enumerable property definitions (`Type.hide`)
+* Constructors
+* Prototypal inheritance
+* Multiple inheritance
+* Non-enumerable property definitions
 
 
-## Installation
+## Getting Started
 
 From your project directory, install and save as a dependency:
 ```bash
@@ -24,15 +22,217 @@ npm install --save lighter-type
 ```
 
 
+## Extreme Performance
+
+All inheritance libraries have a cost, and the cost of `lighter-type`
+has been kept to a minimum. Since applications are likely to create
+many instances of an object, performance optimizations have been focused
+more on object instantiation than prototype definition. As a result,
+we have achieved more operations per second than other modules in our
+object instantiation benchmark:
+
+![](https://raw.githubusercontent.com/lighterio/lighter-type/master/test/bench/run.png =450×290)
+
+
 ## API
 
-For now, please see the [source](https://github.com/lighterio/lighter-type/blob/master/lighter-type.js).
+The `lighter-type` module outputs a constructor with several methods.
 
+### Type.extend(map)
 
-## Examples
+Define and return a sub type of the `Type` object, with a prototype decorated
+with a `map` of additional properties. Additionally, the sub type itself gets
+the same properties as its super type (such as the `extend` method).
 
-For now, please see the [tests](https://github.com/lighterio/lighter-type/blob/master/test/type.js).
+When the `map` includes a property called `init`, it is used as the constructor
+for the sub type rather than being added as a prototype property.
 
+```javascript
+var Type = require('lighter-type')
+
+// Make a Person type.
+var Person = Type.extend({
+
+  // Construct a new person with a name.
+  init: function (name) {
+    this.name = name
+  },
+
+  // Give each person a default salutation of "Hello".
+  salutation: 'Hello',
+
+  // Greet a person with their defined salutation.
+  greet: function () {
+    console.log(this.salutation + ', ' + this.name + '!')
+  }
+
+})
+
+// Make a Friend sub type by extending the Person type.
+var Friend = Person.extend({
+
+  // Be a bit more informal with friends.
+  salutation: 'Hi'
+
+})
+
+// Instantiate Bob, and greet him.
+var bob = new Person('Bob')
+bob.greet()
+//> "Hello, Bob!"
+
+// Instantiate Joe, and greet him.
+var joe = new Friend('Joe')
+joe.greet()
+//> "Hi, Joe!"
+```
+
+Each type's prototype has `_super` property which references its parent
+prototype, and each type has a `_super` property which references its
+parent type.
+
+```javascript
+var Type = require('lighter-type')
+
+var Robot = Type.extend({
+  bend: function (object) {
+    object.isBent = true
+  }
+})
+
+var Bender = Robot.extend({
+  bend: function (object) {
+    this._super.bend(object)
+    console.log('Bite my shiny metal ass.')
+  }
+})
+
+var beam = {}
+var bender = new Bender()
+bender.bend(beam)
+//> Bite my shiny metal ass.
+
+console.log(beam.isBent)
+//> true
+```
+
+### Type.decorate(object[, map][, overwrite])
+
+Decorate an `object` with a `map` of additional properties (or overriding
+properties if `overwrite` is truthy). If the map is not specified, the `Type`
+prototype will decorate the `object` prototype instead.
+
+```javascript
+var Type = require('lighter-type')
+
+// Add a few methods to the Array object's prototype.
+Type.decorate(Array.prototype, {
+  first: function () {
+    return this[0]
+  },
+  last: function () {
+    return this[this.length - 1]
+  },
+  sum: function () {
+    var s = 0
+    for (var i = 0, l = this.length; i < l; i++) {
+      s += this[i]
+    }
+    return s
+  }
+})
+
+// Create a plain old array of numbers.
+var a = [1, 2, 3]
+
+console.log(a.first())
+//> 1
+
+console.log(a.last())
+//> 3
+
+console.log(a.sum())
+//> 6
+```
+
+The `decorate` method can be used for multiple inheritance purposes, by
+using multiple Type prototypes to decorate another object prototype.
+
+```javascript
+var Type = require('lighter-type')
+
+// A vehicle might work on land or water.
+var Vehicle = Type.extend({
+
+  // Return isLandVehicle as a boolean.
+  worksOnLand: function () {
+    return !!this.isLandVehicle
+  },
+
+  // Return isWaterVehicle as a boolean.
+  worksOnWater: function () {
+    return !!this.isWaterVehicle
+  }
+
+})
+
+// A car is a land vehicle.
+var Car = Vehicle.extend({
+  isLandVehicle: true
+})
+
+// A boat is a water vehicle.
+var Boat = Vehicle.extend({
+  isWaterVehicle: true
+})
+
+// A duck is a vehicle, plain and simple.
+var Duck = Vehicle.extend({})
+
+// Make it work like a car or a boat.
+Car.decorate(Duck)
+Boat.decorate(Duck)
+
+// Create a new Duck.
+var duck = new Duck()
+
+console.log(duck.worksOnLand())
+//> true
+
+console.log(duck.worksOnWater())
+//> true
+```
+
+### Type.hide(object, key, value)
+
+Create a property of `object` named `key` with value `value`, and "hide" it by
+making it non-enumerable.
+
+```javascript
+var Type = require('lighter-type')
+
+// Create an object with a visible (i.e. enumerable) method.
+var object = {
+  visible: function () {
+    console.log('I am visible.')
+  }
+}
+
+// Add a non-enumerable property called "hidden".
+Type.hide(object, 'hidden', function () {
+  console.log('I am hidden.')
+})
+
+// Verify that the "hidden" method exists.
+object.hidden()
+//> "I exist."
+
+// Verify that only the "visible" method is enumerable.
+for (var key in object) {
+  console.log(key)
+}
+//> "visible"
+```
 
 ## Acknowledgements
 
@@ -40,32 +240,9 @@ We would like to thank all of the amazing people who use, support,
 promote, enhance, document, patch, and submit comments & issues -
 `lighter-type` couldn't exist without you.
 
-Additionally, huge thanks go to [Goin’](https://goin.io) for employing
+Additionally, huge thanks go to [eBay](http://www.ebay.com) for employing
 and supporting [`lighter-type`](http://lighter.io/lighter-type) project
 maintainers, and for being an epically awesome place to work (and play).
-
-
-## MIT License
-
-Copyright (c) 2014 Sam Eubank
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
 ## How to Contribute

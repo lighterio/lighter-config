@@ -13,27 +13,22 @@ var Type = module.exports = function () {}
  * @return {Object}      The new Type.
  */
 Type.extend = function (map) {
-  var self = this
-
-  // Reference the super prototype which is being extended from.
-  var sup = self.prototype
 
   // Create the constructor, using a new or inherited `init` method.
   var type = map.init || function () {
-    self.apply(this, arguments)
+    type._super.apply(this, arguments)
   }
 
-  // Reference the sub prototype which is being extended.
-  var sub = type.prototype
-
   // Copy the super type and its prototype.
-  Type.decorate(type, self, true)
-  Type.decorate(sub, sup, true)
+  this.decorate(type, this, true)
+  this.decorate(type.prototype, this.prototype, true)
 
   // Copy the properties that extend the super.
-  Type.decorate(sub, map, true)
+  this.decorate(type.prototype, map, true)
 
-  delete map
+  // Make a reference to the super and the super prototype.
+  type.prototype._super = this.prototype
+  type._super = this
 
   return type
 }
