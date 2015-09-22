@@ -14,7 +14,7 @@ It supports:
 * Non-enumerable property definitions
 
 
-## Getting Started
+## Installation
 
 From your project directory, install and save as a dependency:
 ```bash
@@ -186,20 +186,20 @@ var Boat = Vehicle.extend({
   isWaterVehicle: true
 })
 
-// A duck is a vehicle, plain and simple.
-var Duck = Vehicle.extend({})
+// A hovercraft is a vehicle, plain and simple.
+var Hovercraft = Vehicle.extend({})
 
 // Make it work like a car or a boat.
-Car.decorate(Duck)
-Boat.decorate(Duck)
+Car.decorate(Hovercraft)
+Boat.decorate(Hovercraft)
 
-// Create a new Duck.
-var duck = new Duck()
+// Create a new Hovercraft.
+var hovercraft = new Hovercraft()
 
-console.log(duck.worksOnLand())
+console.log(hovercraft.worksOnLand())
 //> true
 
-console.log(duck.worksOnWater())
+console.log(hovercraft.worksOnWater())
 //> true
 ```
 
