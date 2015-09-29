@@ -1,4 +1,7 @@
-# lighter-type Change Log
+# lighter-type ChangeLog
 
-## 2015-09-22: v1.0.0
+## v1.1.0 - 2015-09-28
+* `minor` Type.init method.
 
+## v1.0.0 - 2015-09-21
+* `major` Community release.
