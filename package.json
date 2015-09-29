@@ -10,6 +10,12 @@
     "klass": ">=1.4.1",
     "modelo": ">=4.1.2"
   },
+  "optionalDependencies": [
+    "augment",
+    "fiber",
+    "klass",
+    "modelo"
+  ],
   "keywords": [
     "lighter",
     "type",
