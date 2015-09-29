@@ -3,6 +3,30 @@ var is = global.is || require('exam/lib/is')
 
 describe('Type', function () {
 
+  describe('constructor', function () {
+
+    it('instantiates an object', function () {
+      var type = new Type()
+      is.instanceOf(type, Type)
+    })
+
+    it('comes from super if omitted', function () {
+      var Super = Type.extend({
+        init: function (name) {
+          this.name = name
+        }
+      })
+      var Sub = Super.extend({
+        isSub: function () {
+          return true
+        }
+      })
+      var sub = new Sub('sub')
+      is(sub.name, 'sub')
+      is(sub.isSub(), true)
+    })
+  })
+
   describe('.hide', function () {
 
     it('creates hidden properties', function () {
@@ -16,7 +40,6 @@ describe('Type', function () {
         is(p, 'a')
       }
     })
-
   })
 
   describe('.decorate', function () {
@@ -25,18 +48,6 @@ describe('Type', function () {
       var o = {}
       Type.decorate(o, {a: 1})
       is(o.a, 1)
-    })
-
-    it('hides underscored-prefixed keys', function () {
-      var o = {}
-      Type.decorate(o, {a: 1, _a: 2})
-      is(o.a, 1)
-      is(o._a, 2)
-
-      // The "_a" property shouldn't be enumerable.
-      for (var p in o) {
-        is(p, 'a')
-      }
     })
 
     it('uses a prototype if no decorations are provided', function () {
@@ -68,7 +79,6 @@ describe('Type', function () {
       Type.decorate(o, p, true)
       is.same(o, {a: 1, b: 2, c: 3})
     })
-
   })
 
   describe('.extend', function () {
@@ -97,7 +107,6 @@ describe('Type', function () {
           // This method and Super itself are one and the same.
         }
       })
-      //is(Super, Super.prototype.init)
       var Sub = Super.extend({
         add: function () {
           // This should be a Sub method, not a Super method.
@@ -105,32 +114,61 @@ describe('Type', function () {
       })
       is.undefined(Super.prototype.add)
     })
-
   })
 
-  describe('constructor', function () {
+  describe('.init', function () {
 
-    it('instantiates an object', function () {
-      var type = new Type()
-      is.instanceOf(type, Type)
+    var Adder = Type.extend({
+      init: function (name) {
+        this.name = name
+      },
+      add: function (a, b) {
+        return a + b
+      }
     })
 
-    it('comes from super if omitted', function () {
-      var Super = Type.extend({
-        init: function (name) {
-          this.name = name
-        }
-      })
-      var Sub = Super.extend({
-        isSub: function () {
-          return true
-        }
-      })
-      var sub = new Sub('sub')
-      is(sub.name, 'sub')
-      is(sub.isSub(), true)
+    var AsyncAdder = Type.extend({
+      init: function (name) {
+        this.name = name
+        this.isAsync = true
+      },
+      add: function (a, b, fn) {
+        fn(undefined, a + b)
+      }
     })
 
+    it('gives prototype methods to a plain object', function () {
+      var calculator = {}
+      Adder.init(calculator)
+      var three = calculator.add(1, 2)
+      is(three, 3)
+    })
+
+    it('leaves existing methods alone if not told to overwrite', function () {
+      var asyncAdder = new AsyncAdder()
+      Adder.init(asyncAdder)
+      var noReturnValue = asyncAdder.add(1, 2, function () {})
+      is.undefined(noReturnValue)
+    })
+
+    it('overwrites existing methods if told to', function () {
+      var adder = new AsyncAdder()
+      Adder.init(adder, true)
+      var three = adder.add(1, 2)
+      is(three, 3)
+    })
+
+    it('accepts arguments', function () {
+      var adder = new AsyncAdder()
+      Adder.init(adder, ['me'])
+      is(adder.name, 'me')
+    })
+
+    it('skips the constructor if arguments is false', function () {
+      var calculator = {}
+      Adder.init(calculator, false, false)
+      is.function(calculator.add)
+      is.undefined(calculator.name)
+    })
   })
-
 })

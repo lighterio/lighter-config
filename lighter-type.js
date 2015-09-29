@@ -1,3 +1,4 @@
+'use strict'
 /**
  * A Type can be instantiated and extended to yield sub-types. whose instances can be constructed
  * with an `init` method.
@@ -18,6 +19,7 @@ Type.extend = function (map) {
   var type = map.init || function () {
     type._super.apply(this, arguments)
   }
+  delete map.init
 
   // Copy the super type and its prototype.
   this.decorate(type, this, true)
@@ -38,7 +40,7 @@ Type.extend = function (map) {
  *
  * @param  {Object}  object     An object to decorate.
  * @param  {Object}  map        An optional map to decorate the object with.
- * @param  {Boolean} overwrite  Whether to overwrite values that are already defined.
+ * @param  {Boolean} overwrite  Whether to overwrite existing properties.
  */
 Type.decorate = function (object, map, overwrite) {
   // If a map isn't provided, use prototypes.
@@ -47,17 +49,28 @@ Type.decorate = function (object, map, overwrite) {
     map = this.prototype
   }
   for (var key in map) {
-    if (key !== 'init') {
-      if (overwrite || (object[key] === undefined)) {
-        var value = map[key]
-        // Give some privacy to methods starting with "_".
-        if (key[0] === '_' || (typeof value === 'function' && value.name[0] === '_')) {
-          Type.hide(object, key, value)
-        } else {
-          object[key] = value
-        }
-      }
+    if (overwrite || (object[key] === undefined)) {
+      object[key] = map[key]
     }
+  }
+}
+
+/**
+ * Decorate an object with prototype properties, and run a constructor on it.
+ *
+ * @param  {Object}         object     An object to decorate.
+ * @param  {Boolean}        overwrite  Whether to overwrite existing properties.
+ * @param  {Array|Boolean}  args       Optional arguments for the constructor, or false to skip the constructor.
+ */
+Type.init = function (object, overwrite, args) {
+  // Allow calling with (object, args).
+  if (overwrite && overwrite.length) {
+    args = overwrite
+    overwrite = false
+  }
+  this.decorate(object, this.prototype, overwrite)
+  if (args !== false) {
+    this.apply(object, args)
   }
 }
 
