@@ -4,8 +4,18 @@
   "description": "A lightweight JavaScript inheritance utility.",
   "dependencies": {},
   "devDependencies": {
-    "exam": ">=0.3.8"
+    "augment": ">=4.3.0",
+    "exam": ">=0.3.8",
+    "fiber": ">=1.0.4",
+    "klass": ">=1.4.1",
+    "modelo": ">=4.1.2"
   },
+  "optionalDependencies": [
+    "augment",
+    "fiber",
+    "klass",
+    "modelo"
+  ],
   "keywords": [
     "lighter",
     "type",
@@ -27,7 +37,7 @@
   ],
   "main": "lighter-type.js",
   "engines": {
-    "node": ">=0.8.28"
+    "node": ">=0.10.40"
   },
   "scripts": {
     "test": "./node_modules/exam/exam.js",
