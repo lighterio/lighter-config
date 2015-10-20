@@ -5,7 +5,7 @@
  */
 
 // The base constructor does nothing.
-var Type = module.exports = function () {}
+var Type = module.exports = function Type () {}
 
 /**
  * Extend a Type, yielding a new Type with additional properties from a map.
@@ -13,22 +13,21 @@ var Type = module.exports = function () {}
  * @param  {Object} map  A map of additional properties.
  * @return {Object}      The new Type.
  */
-Type.extend = function (map) {
-
-  // Create the constructor, using a new or inherited `init` method.
-  var type = map.init || function () {
+Type.extend = function extend (map) {
+  // Construct.
+  var type = map.init || function init () {
     type._super.apply(this, arguments)
   }
-  delete map.init
 
-  // Copy the super type and its prototype.
+  // Copy type and prototype properties.
   this.decorate(type, this, true)
   this.decorate(type.prototype, this.prototype, true)
 
-  // Copy the properties that extend the super.
+  // Extend with map.
   this.decorate(type.prototype, map, true)
+  delete type.prototype.init
 
-  // Make a reference to the super and the super prototype.
+  // Reference supers.
   type.prototype._super = this.prototype
   type._super = this
 
@@ -42,7 +41,7 @@ Type.extend = function (map) {
  * @param  {Object}  map        An optional map to decorate the object with.
  * @param  {Boolean} overwrite  Whether to overwrite existing properties.
  */
-Type.decorate = function (object, map, overwrite) {
+Type.decorate = function decorate (object, map, overwrite) {
   // If a map isn't provided, use prototypes.
   if (!map) {
     object = object.prototype
@@ -62,7 +61,7 @@ Type.decorate = function (object, map, overwrite) {
  * @param  {Boolean}        overwrite  Whether to overwrite existing properties.
  * @param  {Array|Boolean}  args       Optional arguments for the constructor, or false to skip the constructor.
  */
-Type.init = function (object, overwrite, args) {
+Type.init = function init (object, overwrite, args) {
   // Allow calling with (object, args).
   if (overwrite && overwrite.length) {
     args = overwrite
@@ -81,7 +80,7 @@ Type.init = function (object, overwrite, args) {
  * @param  {String} key     The name of the property to define.
  * @param  {Any}    value   The value of the property to define.
  */
-Type.hide = function (object, key, value) {
+Type.hide = function hide (object, key, value) {
   Object.defineProperty(object, key, {
     enumerable: false,
     writable: true,

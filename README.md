@@ -4,9 +4,11 @@
 [![Downloads](https://img.shields.io/npm/dm/lighter-type.svg)](//www.npmjs.com/package/lighter-type)
 [![Build](https://img.shields.io/travis/lighterio/lighter-type.svg)](//travis-ci.org/lighterio/lighter-type)
 [![Coverage](https://img.shields.io/coveralls/lighterio/lighter-type/master.svg)](//coveralls.io/r/lighterio/lighter-type)
-[![Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](//github.com/feross/standard)
+[![Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](//www.npmjs.com/package/standard)
 
-The `lighter-type` module is a lightweight inheritance utility.
+The `lighter-type` module is a prototypal inheritance utility with
+[better performance](//github.com/lighterio/lighter-type/blob/master/BENCHMARKS.md)
+than similar inheritance utilities.
 
 It supports:
 * Constructors
@@ -22,19 +24,6 @@ From your project directory, install and save as a dependency:
 npm install --save lighter-type
 ```
 
-
-## Extreme Performance
-
-All inheritance libraries have a cost, and the cost of `lighter-type`
-has been kept to a minimum. Since applications are likely to create
-many instances of an object, performance optimizations have been focused
-more on object instantiation than prototype definition. As a result,
-we have achieved more operations per second than other modules in our
-object instantiation benchmark:
-
-<img src="https://raw.githubusercontent.com/lighterio/lighter-type/master/test/bench/run.png" width="600" height="340">
-
-
 ## API
 
 The `lighter-type` module outputs a constructor with several methods.
@@ -48,7 +37,7 @@ the same properties as its super type (such as the `extend` method).
 When the `map` includes a property called `init`, it is used as the constructor
 for the sub type rather than being added as a prototype property.
 
-```javascript
+```js
 var Type = require('lighter-type')
 
 // Make a Person type.
@@ -92,7 +81,7 @@ Each type's prototype has `_super` property which references its parent
 prototype, and each type has a `_super` property which references its
 parent type.
 
-```javascript
+```js
 var Type = require('lighter-type')
 
 var Robot = Type.extend({
@@ -123,7 +112,11 @@ Decorate an object with the prototype of a `Type`, and call its constructor
 on the object with an `args` array, unless `args` is `false`, in which case
 the constructor will be skipped.
 
-```javascript
+Any object that extends Type (such as
+[lighter-emitter](//github.com/lighterio/lighter-emitter))
+will inherit `Type.init` and other Type methods.
+
+```js
 // The `lighter-emitter` module extends `lighter-type`.
 var Emitter = require('lighter-emitter')
 
@@ -144,7 +137,7 @@ Decorate an `object` with a `map` of additional properties (or overriding
 properties if `overwrite` is truthy). If the map is not specified, the `Type`
 prototype will decorate the `object` prototype instead.
 
-```javascript
+```js
 var Type = require('lighter-type')
 
 // Add a few methods to the Array object's prototype.
@@ -180,7 +173,7 @@ console.log(a.sum())
 The `decorate` method can be used for multiple inheritance purposes, by
 using multiple Type prototypes to decorate another object prototype.
 
-```javascript
+```js
 var Type = require('lighter-type')
 
 // A vehicle might work on land or water.
@@ -230,7 +223,7 @@ console.log(hovercraft.worksOnWater())
 Create a property of `object` named `key` with value `value`, and "hide" it by
 making it non-enumerable.
 
-```javascript
+```js
 var Type = require('lighter-type')
 
 // Create an object with a visible (i.e. enumerable) method.
@@ -256,12 +249,10 @@ for (var key in object) {
 //> "visible"
 ```
 
-## Acknowledgements
 
-We would like to thank all of the amazing people who use, support,
-promote, enhance, document, patch, and submit comments & issues -
-`lighter-type` couldn't exist without you.
-
-Additionally, huge thanks go to [eBay](http://www.ebay.com) for employing
-and supporting [`lighter-type`](http://lighter.io/lighter-type) project
-maintainers, and for being an epically awesome place to work (and play).
+## More on lighter-type...
+* [Contributing](//github.com/lighterio/lighter-type/blob/master/CONTRIBUTING.md)
+* [License (ISC)](//github.com/lighterio/lighter-type/blob/master/LICENSE.md)
+* [Change Log](//github.com/lighterio/lighter-type/blob/master/CHANGELOG.md)
+* [Benchmarks](//github.com/lighterio/lighter-type/blob/master/BENCHMARKS.md)
+* [Roadmap](//github.com/lighterio/lighter-type/blob/master/ROADMAP.md)

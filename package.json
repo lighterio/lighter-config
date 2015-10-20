@@ -1,21 +1,11 @@
 {
   "name": "lighter-type",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "A lightweight JavaScript inheritance utility.",
   "dependencies": {},
   "devDependencies": {
-    "augment": ">=4.3.0",
-    "exam": ">=0.3.8",
-    "fiber": ">=1.0.4",
-    "klass": ">=1.4.1",
-    "modelo": ">=4.1.2"
+    "exam": ">=1.2.0 <2"
   },
-  "optionalDependencies": [
-    "augment",
-    "fiber",
-    "klass",
-    "modelo"
-  ],
   "keywords": [
     "lighter",
     "type",
@@ -24,6 +14,8 @@
     "prototype",
     "prototypal",
     "multiple",
+    "swiss",
+    "mixin",
     "extend",
     "decorate",
     "init",
@@ -33,7 +25,28 @@
     "properties",
     "fast",
     "lightweight",
-    "minimal"
+    "minimal",
+    "resig",
+    "class",
+    "classy",
+    "util",
+    "inherits",
+    "modelo",
+    "augment",
+    "fiber",
+    "klass",
+    "proto",
+    "extends",
+    "decorator",
+    "super",
+    "sub",
+    "construct",
+    "lightweight",
+    "benchmarks",
+    "benchmark",
+    "bench",
+    "optimize",
+    "optimized"
   ],
   "main": "lighter-type.js",
   "engines": {
@@ -44,7 +57,8 @@
     "cover": "./node_modules/exam/exam-cover.js",
     "report": "open coverage/lcov-report/index.html",
     "coveralls": "./node_modules/exam/exam-coveralls.js",
-    "bench": "./node_modules/exam/exam.js test/bench"
+    "prebench": "npm install exam augment fiber klass modelo",
+    "bench": "./node_modules/exam/exam.js -mg bench -B"
   },
   "repository": "https://github.com/lighterio/lighter-type.git",
   "bugs": "https://github.com/lighterio/lighter-type/issues",

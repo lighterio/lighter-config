@@ -1,12 +1,18 @@
-var fs = require('fs')
-var fns = {}
-var dir = __dirname + '/alternatives'
-fs.readdirSync(dir).forEach(function (file) {
-  var key = file.replace('.js', '')
-  try {
-    fns[key] = require(dir + '/' + file)
-  } catch (ignore) {
-  }
-})
+'use strict'
+var fns = exports.fns = {}
 
-exports.fns = fns
+load('augment')
+load('fiber')
+load('klass')
+load('modelo')
+load('type')
+load('util')
+
+function load (key) {
+  try {
+    var fn = require(__dirname + '/alternatives/' + key)
+    fns[key] = fn
+  } catch (ignore) {
+    console.log(ignore)
+  }
+}

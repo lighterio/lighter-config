@@ -50,3 +50,13 @@ We promise to extend courtesy and respect to everyone involved in this project
 regardless of gender, gender identity, sexual orientation, ability or
 disability, ethnicity, religion, age, location, native language, or level of
 experience.
+
+## Acknowledgements
+
+We would like to thank all of the amazing people who use, support,
+promote, enhance, document, patch, and submit comments & issues -
+`lighter-type` couldn't exist without you.
+
+Additionally, huge thanks go to [eBay](http://www.ebay.com) for employing
+and supporting [`lighter-type`](http://lighter.io/lighter-type) project
+maintainers, and for being an epically awesome place to work (and play).

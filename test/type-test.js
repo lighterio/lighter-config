@@ -1,10 +1,10 @@
+'use strict'
+/* global describe it */
 var Type = require('../lighter-type')
 var is = global.is || require('exam/lib/is')
 
 describe('Type', function () {
-
   describe('constructor', function () {
-
     it('instantiates an object', function () {
       var type = new Type()
       is.instanceOf(type, Type)
@@ -28,7 +28,6 @@ describe('Type', function () {
   })
 
   describe('.hide', function () {
-
     it('creates hidden properties', function () {
       var o = {a: 1}
       Type.hide(o, 'b', 2)
@@ -43,7 +42,6 @@ describe('Type', function () {
   })
 
   describe('.decorate', function () {
-
     it('decorates with additions', function () {
       var o = {}
       Type.decorate(o, {a: 1})
@@ -82,7 +80,6 @@ describe('Type', function () {
   })
 
   describe('.extend', function () {
-
     it('extends a type', function () {
       var Dog = Type.extend({
         init: function (name) {
@@ -107,7 +104,7 @@ describe('Type', function () {
           // This method and Super itself are one and the same.
         }
       })
-      var Sub = Super.extend({
+      Super.extend({
         add: function () {
           // This should be a Sub method, not a Super method.
         }
@@ -117,7 +114,6 @@ describe('Type', function () {
   })
 
   describe('.init', function () {
-
     var Adder = Type.extend({
       init: function (name) {
         this.name = name

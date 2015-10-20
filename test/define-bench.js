@@ -1,3 +1,5 @@
+'use strict'
+/* global it */
 var fns = require('./bench-util').fns
 var bench = global.bench || function () {}
 
