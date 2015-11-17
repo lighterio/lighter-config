@@ -1,10 +1,10 @@
-# lighter-type Roadmap
+# lighter-config Roadmap
 
 ***This is a living document. It describes priorities as they are perceived
 today, and it can evolve over time.***
 
 ## Type.inherits
-As of version 1, lighter-type does not do exactly what util.inherits does, so it's not a suitable swap-in replacement.
+As of version 1, lighter-config does not do exactly what util.inherits does, so it's not a suitable swap-in replacement.
 
 ## Visualization
 It would be nice to optionally see an inheritance diagram showing which Type objects extend which others.
