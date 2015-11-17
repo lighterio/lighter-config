@@ -17,208 +17,221 @@ describe('lighter-config', function () {
     is.object(config)
   })
 
-  describe('replacement', function () {
-    it('sees an empty environment as development', function () {
-      var config = getConfig('')
-      is(config.env, '')
-      is(config.environment, 'development')
+  describe('.get', function () {
+    it('is a function', function () {
+      var config = require(libPath)
+      is.function(config.get)
     })
 
-    it('sees "whatever" as development', function () {
-      var config = getConfig('whatever')
-      is(config.env, 'whatever')
-      is(config.environment, 'development')
+    it('is idempotent when used with no options', function () {
+      var a = getConfig()
+      var b = a.get()
+      is.same(a, b)
     })
 
-    it('sees "dev" as development', function () {
-      var config = getConfig('dev')
-      is(config.environment, 'development')
-      is.false(config.isDebug)
-      is.true(config.isDevelopment)
-      is.false(config.isStaging)
-      is.false(config.isProduction)
-    })
-
-    it('sees "debug" as development with debugging', function () {
-      mock(console, {
-        error: mock.count()
+    describe('replacement', function () {
+      it('sees an empty environment as staging', function () {
+        var config = getConfig('')
+        is(config.env, 'staging')
+        is(config.environment, 'staging')
       })
-      var config = getConfig('debug')
-      is(console.error.value, 2)
-      is(config.env, 'debug')
-      is(config.environment, 'development')
-      is.true(config.isDebug)
-      is.true(config.isDevelopment)
-      is.false(config.isStaging)
-      is.false(config.isProduction)
+
+      it('sees "whatever" as staging', function () {
+        var config = getConfig('whatever')
+        is(config.env, 'whatever')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "dev" as development', function () {
+        var config = getConfig('dev')
+        is(config.environment, 'development')
+        is.false(config.isDebug)
+        is.true(config.isDevelopment)
+        is.false(config.isStaging)
+        is.false(config.isProduction)
+      })
+
+      it('sees "debug" as development with debugging', function () {
+        mock(console, {
+          error: mock.count()
+        })
+        var config = getConfig('debug')
+        is(console.error.value, 2)
+        is(config.env, 'debug')
+        is(config.environment, 'development')
+        is.true(config.isDebug)
+        is.true(config.isDevelopment)
+        is.false(config.isStaging)
+        is.false(config.isProduction)
+      })
+
+      it('sees "sandbox" as development', function () {
+        var config = getConfig('sandbox')
+        is(config.environment, 'development')
+      })
+
+      it('sees "alpha" as development', function () {
+        var config = getConfig('alpha')
+        is(config.environment, 'development')
+      })
+
+      it('sees "local" as development', function () {
+        var config = getConfig('local')
+        is(config.environment, 'development')
+      })
+
+      it('sees "development" as development', function () {
+        var config = getConfig('development')
+        is(config.environment, 'development')
+      })
+
+      it('sees "stage" as staging', function () {
+        var config = getConfig('stage')
+        is(config.environment, 'staging')
+        is.false(config.isDebug)
+        is.false(config.isDevelopment)
+        is.true(config.isStaging)
+        is.false(config.isProduction)
+      })
+
+      it('sees "qa" as staging', function () {
+        var config = getConfig('qa')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "test" as staging', function () {
+        var config = getConfig('test')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "beta" as staging', function () {
+        var config = getConfig('beta')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "ci" as staging', function () {
+        var config = getConfig('ci')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "jenkins" as staging', function () {
+        var config = getConfig('jenkins')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "staging" as staging', function () {
+        var config = getConfig('staging')
+        is(config.environment, 'staging')
+      })
+
+      it('sees "prod" as production', function () {
+        var config = getConfig('prod')
+        is(config.environment, 'production')
+        is.false(config.isDebug)
+        is.false(config.isDevelopment)
+        is.false(config.isStaging)
+        is.true(config.isProduction)
+      })
+
+      it('sees "gamma" as production', function () {
+        var config = getConfig('gamma')
+        is(config.environment, 'production')
+      })
+
+      it('sees "release" as production', function () {
+        var config = getConfig('release')
+        is(config.environment, 'production')
+      })
+
+      it('sees "onebox" as production', function () {
+        var config = getConfig('onebox')
+        is(config.environment, 'production')
+      })
+
+      it('sees "canary" as production', function () {
+        var config = getConfig('canary')
+        is(config.environment, 'production')
+      })
+
+      it('sees "production" as production', function () {
+        var config = getConfig('production')
+        is(config.environment, 'production')
+      })
     })
 
-    it('sees "sandbox" as development', function () {
-      var config = getConfig('sandbox')
-      is(config.environment, 'development')
-    })
+    describe('file reader', function () {
+      it('reads config values', function () {
+        mockFiles({
+          common: {key: 'value'}
+        })
+        var config = getConfig()
+        is(config.key, 'value')
+        unmock()
+      })
 
-    it('sees "alpha" as development', function () {
-      var config = getConfig('alpha')
-      is(config.environment, 'development')
-    })
+      it('replaces environment values', function () {
+        mock(process.env, {
+          KEY: 'VALUE'
+        })
+        mockFiles({
+          common: {key: '$KEY'}
+        })
+        var config = getConfig()
+        is(config.key, 'VALUE')
+        unmock()
+      })
 
-    it('sees "local" as development', function () {
-      var config = getConfig('local')
-      is(config.environment, 'development')
-    })
+      it('replaces empty environment values with empty strings', function () {
+        mockFiles({
+          common: {key: '$I_DO_NOT_EXIST'}
+        })
+        var config = getConfig()
+        is(config.key, '')
+        unmock()
+      })
 
-    it('sees "development" as development', function () {
-      var config = getConfig('development')
-      is(config.environment, 'development')
-    })
+      it('replaces empty environment values with default strings', function () {
+        mock(process.env, {
+          PORT: 8888
+        })
+        mockFiles({
+          common: {
+            host: '${HOST-localhost}',
+            port: '${PORT-8080}',
+            suffix: '${SUFFIX-}'
+          }
+        })
+        var config = getConfig()
+        is(config.host, 'localhost')
+        is(config.port, '8888')
+        is(config.suffix, '')
+        unmock()
+      })
 
-    it('sees "stage" as staging', function () {
-      var config = getConfig('stage')
-      is(config.environment, 'staging')
-      is.false(config.isDebug)
-      is.false(config.isDevelopment)
-      is.true(config.isStaging)
-      is.false(config.isProduction)
-    })
-
-    it('sees "qa" as staging', function () {
-      var config = getConfig('qa')
-      is(config.environment, 'staging')
-    })
-
-    it('sees "test" as staging', function () {
-      var config = getConfig('test')
-      is(config.environment, 'staging')
-    })
-
-    it('sees "beta" as staging', function () {
-      var config = getConfig('beta')
-      is(config.environment, 'staging')
-    })
-
-    it('sees "ci" as staging', function () {
-      var config = getConfig('ci')
-      is(config.environment, 'staging')
-    })
-
-    it('sees "jenkins" as staging', function () {
-      var config = getConfig('jenkins')
-      is(config.environment, 'staging')
-    })
-
-    it('sees "staging" as staging', function () {
-      var config = getConfig('staging')
-      is(config.environment, 'staging')
-    })
-
-    it('sees "prod" as production', function () {
-      var config = getConfig('prod')
-      is(config.environment, 'production')
-      is.false(config.isDebug)
-      is.false(config.isDevelopment)
-      is.false(config.isStaging)
-      is.true(config.isProduction)
-    })
-
-    it('sees "gamma" as production', function () {
-      var config = getConfig('gamma')
-      is(config.environment, 'production')
-    })
-
-    it('sees "release" as production', function () {
-      var config = getConfig('release')
-      is(config.environment, 'production')
-    })
-
-    it('sees "onebox" as production', function () {
-      var config = getConfig('onebox')
-      is(config.environment, 'production')
-    })
-
-    it('sees "canary" as production', function () {
-      var config = getConfig('canary')
-      is(config.environment, 'production')
-    })
-
-    it('sees "production" as production', function () {
-      var config = getConfig('production')
-      is(config.environment, 'production')
+      it('logs an error when JSON is invalid', function () {
+        var fs = {}
+        fs[cwd + '/config/common.json'] = 'this is not valid JSON'
+        fs[libPath] = libContent
+        mock.fs(fs)
+        mock(console, {
+          error: mock.count()
+        })
+        var config = getConfig()
+        is(console.error.value, 1)
+        is(config.environment, 'staging')
+        unmock()
+      })
     })
   })
 
-  describe('file reader', function () {
-    it('reads config values', function () {
+  describe('.load', function () {
+    it('decorates deeply', function () {
       mockFiles({
-        common: {key: 'value'}
+        common: {stuff: {something: 'this'}},
+        staging: {stuff: {something: 'that'}}
       })
       var config = getConfig()
-      is(config.key, 'value')
-      unmock()
-    })
-
-    it('replaces environment values', function () {
-      mock(process.env, {
-        KEY: 'VALUE'
-      })
-      mockFiles({
-        common: {key: '$KEY'}
-      })
-      var config = getConfig()
-      is(config.key, 'VALUE')
-      unmock()
-    })
-
-    it('replaces empty environment values with empty strings', function () {
-      mockFiles({
-        common: {key: '$I_DO_NOT_EXIST'}
-      })
-      var config = getConfig()
-      is(config.key, '')
-      unmock()
-    })
-
-    it('replaces empty environment values with default strings', function () {
-      mock(process.env, {
-        PORT: 8888
-      })
-      mockFiles({
-        common: {
-          host: '${HOST-localhost}',
-          port: '${PORT-8080}',
-          suffix: '${SUFFIX-}'
-        }
-      })
-      var config = getConfig()
-      is(config.host, 'localhost')
-      is(config.port, '8888')
-      is(config.suffix, '')
-      unmock()
-    })
-
-    it('logs an error when JSON is invalid', function () {
-      var fs = {}
-      fs[cwd + '/config/common.json'] = 'this is not valid JSON'
-      fs[libPath] = libContent
-      mock.fs(fs)
-      mock(console, {
-        error: mock.count()
-      })
-      var config = getConfig()
-      is(console.error.value, 1)
-      is(config.environment, 'development')
-      unmock()
-    })
-  })
-
-  describe('decoration', function () {
-    it('goes deep', function () {
-      mockFiles({
-        common: {stuff: {something: 'common'}},
-        development: {stuff: {something: 'development'}}
-      })
-      var config = getConfig()
-      is(config.stuff.something, 'development')
+      is(config.stuff.something, 'that')
       unmock()
     })
   })

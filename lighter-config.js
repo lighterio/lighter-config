@@ -3,30 +3,59 @@ var fs = require('fs')
 var pe = process.env
 var map = {d: 'development', s: 'staging', p: 'production'}
 
-// Read from an environment variable.
-var env = pe.NODE_ENV || pe.LIGHTER_ENV || pe.DEPLOY_ENV || pe.ENV || ''
+// Create the hidden "get" property.
+hide(exports, 'get', get)
 
-// Allow many "env" values.
-var key = env.toLowerCase()
-  .replace(/^([gro]|ca)/, 'p')  // gamma, release, one, canary -> "production".
-  .replace(/^(sa|[al])/, 'd')   // sandbox, alpha, local -> "development".
-  .replace(/^[qtbcij]/, 's')[0] // qa, test, beta, ci, jenkins -> "staging".
+// Get a configuration based on environment variables.
+exports.get({
+  dir: pe.CONFIG_DIR,
+  env: pe.NODE_ENV || pe.LIGHTER_ENV || pe.DEPLOY_ENV || pe.ENV
+}, exports)
 
-// Resolve to an "environment" value.
-var environment = map[key] || map[key = 'd']
+/**
+ * Get a configuration based on options.
+ *
+ * @param  {Object} options  An optional object with optional parameters:
+ *                           - dir: defaults to "config".
+ *                           - env: defaults to "staging".
+ *                           - base: defaults to "common".
+ * @param  {Object} config   An optional object to populate.
+ * @return {Object}          A fully populated configuration object.
+ */
+function get (options, config) {
+  options = options || 0
+  config = config || {}
 
-var self = module.exports = {
-  env: env,
-  environment: environment,
-  isDebug: /de?bu?g/i.test(env),
-  isDevelopment: (key === 'd'),
-  isStaging: (key === 's'),
-  isProduction: (key === 'p')
+  // Load options.
+  var dir = options.dir || 'config'
+  var env = options.env || 'staging'
+  var base = options.base || 'common'
+
+  // Allow many "env" values.
+  var key = env.toLowerCase()
+    .replace(/^([gro]|ca)/, 'p')  // gamma, release, one, canary -> "production".
+    .replace(/^(sa|[al])/, 'd')   // sandbox, alpha, local -> "development".
+    .replace(/^[qtbcij]/, 's')[0] // qa, test, beta, ci, jenkins -> "staging".
+
+  // Coerce to an expected environment.
+  var environment = map[key] || map[key = 's']
+
+  config.env = env
+  config.environment = environment
+  config.isDebug = /de?bu?g/i.test(env)
+  config.isDevelopment = (key === 'd')
+  config.isStaging = (key === 's')
+  config.isProduction = (key === 'p')
+
+  // Load files.
+  hide(config, 'load', load)
+
+  // Load configuration from files.
+  config.load(dir, base)
+  config.load(dir, environment)
+
+  return config
 }
-
-// Load configuration from files.
-load('common')
-load(environment)
 
 /**
  * Load a configuration file from the /config directory, and decorate the
@@ -34,16 +63,14 @@ load(environment)
  *
  * @param  {String} name  File name, excluding ".json"
  */
-function load (name) {
-  var path = 'config/' + name + '.json'
+function load (dir, name) {
+  // Read config JSON.
+  var path = dir + '/' + name + '.json'
   var json
-  var config
-
-  // Read "config/ENV.json".
   try {
     json = '' + fs.readFileSync(path)
   } catch (error) {
-    if (self.isDebug) {
+    if (this.isDebug) {
       console.error('No configuration found in "' + path + '".', error)
     }
     return
@@ -56,15 +83,13 @@ function load (name) {
     return pe[key] || value.substr(1)
   })
 
-  // Parse.
+  // Parse and decorate.
   try {
-    config = JSON.parse(json)
+    var config = JSON.parse(json)
+    decorate(this, config)
   } catch (error) {
     return console.error('Invalid JSON in "' + path + '".', json, error)
   }
-
-  // Set.
-  decorate(self, config)
 }
 
 /**
@@ -81,4 +106,18 @@ function decorate (object, values) {
       object[key] = values[key]
     }
   }
+}
+
+/**
+ * Set a non-enumerable property value.
+ *
+ * @param  {Object} object  An object.
+ * @param  {Object} name    A property name.
+ * @param  {Object} value   A property value.
+ */
+function hide (object, name, value) {
+  Object.defineProperty(object, name, {
+    enumerable: false,
+    value: value
+  })
 }
