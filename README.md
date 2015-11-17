@@ -19,7 +19,7 @@ npm install --save lighter-config
 
 ## Usage
 Create the following files in your project directory, with some JSON content:
-* `/config/common.json`
+* `/config/base.json`
 * `/config/development.json`
 * `/config/staging.json`
 * `/config/production.json`
@@ -34,7 +34,7 @@ var config = require('lighter-config')
 if (config.isDevelopment) {
   console.log('Currently running in development mode.')
 
-  // And if common.json or development.json has a "host" and "port" property:
+  // And if base.json or development.json has a "host" and "port" property:
   console.log('Listening at http://' + config.host + ':' + config.port)
 }
 ```
@@ -77,13 +77,20 @@ following properties:
 * `dir` determines which directory JSON files will be loaded from (with the
   default being "config"). The value is used to prefix calls to
   `fs.readFileSync`, so it can be an absolute path.
-* `base` determines the name of the base configuration, such as `common.json`,
+* `base` determines the name of the base configuration, such as `base.json`,
   which is loaded prior to the environment-specific configuration, such as
-  `staging.json`. It defaults to "common", making the base configuration file
-  `common.json`.
+  `staging.json`. It defaults to "base", making the base configuration file
+  `base.json`.
+
+Example:
+```js
+var config = require('lighter-config')
+var prodConfig = config.get({env: 'production'})
+```
 
 ### `config.load(dir, name)`
-TODO
+The `load` method can load a named configuration from a directory, and use it
+to override a configuration object's properties.
 
 ## Environment Variables
 You can affect the outcome of `lighter-config` by running your application with
@@ -94,12 +101,31 @@ requiring `lighter-config`.
 Determines where `lighter-config` will look for configuration JSON files.
 Defaults to "config" if not found.
 
+### `CONFIG_BASE`
+Determines the name of the base configuration. Defaults to "base".
+
 ### `NODE_ENV`, `LIGHTER_ENV`, `DEPLOY_ENV` or `ENV`
 Determines the value of `config.env` directly, and `config.environment`
 indirectly. Defaults to "staging" if not found.
 
-### Replacements
-TODO
+## Replacements
+Configuration files can include replacement variables, for which substitutions
+will be made. For example, if you want to expect a host and port to be in the
+`HOST` and `PORT` environment variables, you can provide the following JSON:
+```json
+{
+  "host": "$HOST",
+  "port": "$PORT"
+}
+```
+
+You can also include default values:
+```json
+{
+  "host": "${HOST-localhost}",
+  "port": "${PORT-1337}"
+}
+```
 
 ## More on lighter-config...
 * [Contributing](//github.com/lighterio/lighter-config/blob/master/CONTRIBUTING.md)

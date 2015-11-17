@@ -162,7 +162,7 @@ describe('lighter-config', function () {
     describe('file reader', function () {
       it('reads config values', function () {
         mockFiles({
-          common: {key: 'value'}
+          base: {key: 'value'}
         })
         var config = getConfig()
         is(config.key, 'value')
@@ -174,7 +174,7 @@ describe('lighter-config', function () {
           KEY: 'VALUE'
         })
         mockFiles({
-          common: {key: '$KEY'}
+          base: {key: '$KEY'}
         })
         var config = getConfig()
         is(config.key, 'VALUE')
@@ -183,7 +183,7 @@ describe('lighter-config', function () {
 
       it('replaces empty environment values with empty strings', function () {
         mockFiles({
-          common: {key: '$I_DO_NOT_EXIST'}
+          base: {key: '$I_DO_NOT_EXIST'}
         })
         var config = getConfig()
         is(config.key, '')
@@ -195,7 +195,7 @@ describe('lighter-config', function () {
           PORT: 8888
         })
         mockFiles({
-          common: {
+          base: {
             host: '${HOST-localhost}',
             port: '${PORT-8080}',
             suffix: '${SUFFIX-}'
@@ -210,7 +210,7 @@ describe('lighter-config', function () {
 
       it('logs an error when JSON is invalid', function () {
         var fs = {}
-        fs[cwd + '/config/common.json'] = 'this is not valid JSON'
+        fs[cwd + '/config/base.json'] = 'this is not valid JSON'
         fs[libPath] = libContent
         mock.fs(fs)
         mock(console, {
@@ -227,7 +227,7 @@ describe('lighter-config', function () {
   describe('.load', function () {
     it('decorates deeply', function () {
       mockFiles({
-        common: {stuff: {something: 'this'}},
+        base: {stuff: {something: 'this'}},
         staging: {stuff: {something: 'that'}}
       })
       var config = getConfig()
