@@ -1,7 +1,7 @@
 'use strict'
 var fs = require('fs')
 var pe = process.env
-var map = {d: 'development', s: 'staging', p: 'production'}
+var map = {d: 'development', s: 'staging', p: 'production', pre: 'preproduction'}
 var found = {
   dir: pe.CONFIG_DIR,
   env: pe.NODE_ENV || pe.LIGHTER_ENV || pe.DEPLOY_ENV || pe.ENV,
@@ -35,6 +35,7 @@ function get (options, config) {
 
   // Allow many "env" values.
   var key = env.toLowerCase()
+    .replace(/^(pre)/, 'pre')     // preproduction -> "preproduction".
     .replace(/^([gro]|ca)/, 'p')  // gamma, release, one, canary -> "production".
     .replace(/^(sa|[al])/, 'd')   // sandbox, alpha, local -> "development".
     .replace(/^[qtbcij]/, 's')[0] // qa, test, beta, ci, jenkins -> "staging".
@@ -48,6 +49,7 @@ function get (options, config) {
   config.isDevelopment = (key === 'd')
   config.isStaging = (key === 's')
   config.isProduction = (key === 'p')
+  config.isPreProduction = (key === 'pre')
 
   // Load files.
   hide(config, 'load', load)
