@@ -221,6 +221,19 @@ describe('lighter-config', function () {
         is(config.environment, 'staging')
         unmock()
       })
+
+      it('reads sub-environment values', function () {
+        mockFiles({
+          base: {me: 'b'},
+          production: {me: 'p', subEnvironments: ['pre-production']},
+          'pre-production': {me: 'pp'}
+        })
+        var prod = getConfig('production')
+        is(prod.me, 'p')
+        var preprod = getConfig('pre-production')
+        is(preprod.me, 'pp')
+        unmock()
+      })
     })
   })
 

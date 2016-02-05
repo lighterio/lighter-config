@@ -92,6 +92,29 @@ var prodConfig = config.get({env: 'production'})
 The `load` method can load a named configuration from a directory, and use it
 to override a configuration object's properties.
 
+### `config.subEnvironments`
+If a configuration file contains a key called `subEnvironments` with an array
+of sub-environment names, then those environment names are whitelisted as
+override files.
+
+Example `production.json`:
+```js
+{
+  "key": "p",
+  "subEnvironments": ["pre-production"]
+}
+```
+
+Example `pre-production.json`:
+```js
+{
+  "key": "pp"
+}
+```
+If the `NODE_ENV` is set to "pre-production", then the "pre-production.json"
+file will be loaded and used to override the "production.json" configuration.
+
+
 ## Environment Variables
 You can affect the outcome of `lighter-config` by running your application with
 specific environment variable values, or modifying `process.env` prior to

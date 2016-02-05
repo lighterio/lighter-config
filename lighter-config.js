@@ -56,6 +56,12 @@ function get (options, config) {
   config.load(dir, base)
   config.load(dir, environment)
 
+  // Load any matching sub-environments.
+  var subEnvironments = config.subEnvironments
+  if (subEnvironments && subEnvironments.indexOf(env) > -1) {
+    config.load(dir, env)
+  }
+
   return config
 }
 
