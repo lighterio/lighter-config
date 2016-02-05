@@ -49,6 +49,7 @@ base properties, as well as any properties found in configuration files:
 * (Boolean) `config.isDevelopment`
 * (Boolean) `config.isStaging`
 * (Boolean) `config.isProduction`
+* (Boolean) `config.isPreProduction`
 * (Function) `config.get(options)`
 * (Function) `config.load(dir, name)`
 
@@ -65,8 +66,10 @@ The `environment` is based on the `env`, and is coerced to be either
 The `isDebug` property is a special property which is true if the `env` is
 something like "debug" or "dbg".
 
-### `config.isDevelopment`, `config.isStaging` and `config.isProduction`
-The `isDevelopment`, `isStaging` and `isProduction` properties are based on the
+### `config.isDevelopment`, `config.isStaging`, `config.isProduction` and 
+`config.isPreProduction`
+The `isDevelopment`, `isStaging`, `isProduction` and `isPreProduction`
+properties are based on the
 `environment`. Exactly one of them is `true`.
 
 ### `config.get(options)`
